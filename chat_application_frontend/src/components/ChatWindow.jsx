@@ -14,51 +14,60 @@ const ChatWindow = ({ selectedUser }) => {
   const selected_user = selectedUser ? selectedUser.id : null
 
   useEffect(() => {
+
+
+
     const user_id = sessionStorage.getItem('user_id'); 
     id_ref.current = user_id
 
-    console.log(id_ref.current,selected_user )
+    console.log( {"current_user": id_ref.current , "selected" :selected_user } )
+
+
     if(id_ref.current === null){
       navigate("/login")
     }
 
 
-    // if(selected_user !== null){
+    if(id_ref.current !== null & selected_user !== null){
       
-    // }
-
-    const ws = new WebSocket(`ws://localhost:8000/ws/${id_ref.current}/${selected_user}`);
-    ws.onopen = () => {
-      console.log('Connected to WebSocket');
-      
-    };
+      // console.log("making connn")
+      const ws = new WebSocket(`ws://localhost:8000/ws/${id_ref.current}/${selected_user}`);
 
 
-    
-    ws.onmessage = (event) => {
-      const data = event.data;
-      const json_data = JSON.parse(data)
+      ws.onopen = () => {
+        console.log('Connected to WebSocket');
+        
+      };
 
-      if (json_data.sender !== id_ref.current ){
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          json_data['text']
-        ]);
-      }
-      
-    };
+      ws.onmessage = (event) => {
+        const data = event.data;
+        const json_data = JSON.parse(data)
 
-    ws.onclose = () => {
-      console.log('Disconnected from WebSocket');
-    };
+        if (json_data.sender !== id_ref.current ){
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            json_data['text']
+          ]);
+        }
+        
+      };
+
+     
+      ws.onclose = () => {
+        console.log('Disconnected from WebSocket');
+      };
 
 
-    setSocket(ws);
+      setSocket(ws);
 
-    // Cleanup WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
+      return () => {
+        ws.close();
+      };
+    }
+
+  
+
+   
   }, [selected_user, id_ref]);
 
   const handleSendMessage = () => {

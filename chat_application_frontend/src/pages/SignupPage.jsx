@@ -51,7 +51,7 @@ const SignupPage = () => {
 
       const response = await axios.post(url, data, { headers });
       if(response.status === 201){
-        navigate("/chat")
+        navigate("/login")
       }
 
     } catch (error) {

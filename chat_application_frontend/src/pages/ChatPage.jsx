@@ -53,7 +53,10 @@ const App = () => {
   useEffect( () =>{
     // console.log("useEffect chat page")
     const user_id = sessionStorage.getItem('user_id'); 
+
     const ws = new WebSocket(`ws://localhost:8000/ws/status/${user_id}`);
+
+
     ws.onopen = () => {
       // console.log('Connected to WebSocket online users');
       ws.send(JSON.stringify( { "type": "get_online_users"}));

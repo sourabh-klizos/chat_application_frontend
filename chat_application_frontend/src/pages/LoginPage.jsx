@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import './LoginPage.css'; // Import the CSS file for styling
 import '../styles/LoginPage.css';
 import axios  from 'axios';
@@ -10,6 +10,8 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+
 
   const store_id = async (user_id) => {
     sessionStorage.setItem('user_id', user_id);
@@ -38,12 +40,28 @@ const LoginPage = () => {
     try {
 
       const response = await axios.post(url, data, { headers });
+ 
       if(response.status === 200){
 
+
         await store_id(response.data.user_id)
+
+        navigate("/chat")
+        // setuser_id_set()
+
+        // const user_id = sessionStorage.getItem('user_id'); 
+
+        // if(user_id){
+        //   navigate("/chat")
+        // }
+        
+     
+        console.log(response)
         console.log(response.data.user_id)
         
-        navigate("/chat")
+
+       
+      
       }
 
     } catch (error) {
@@ -52,9 +70,14 @@ const LoginPage = () => {
     }
 
     setError('');
-    console.log('Login successful with:', { email, password });
+    // console.log('Login successful with:', { email, password });
     // alert('Login successful!');
   };
+
+
+  useEffect( ()=>{
+
+  },[])
 
   return (
     <div className="login-page">

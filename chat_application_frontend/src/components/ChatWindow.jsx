@@ -1,6 +1,6 @@
 import React, { useState, useEffect , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 const ChatWindow = ({ selectedUser }) => {
   const [message, setMessage] = useState('');
@@ -13,8 +13,33 @@ const ChatWindow = ({ selectedUser }) => {
   const id_ref = useRef(null)
   const selected_user = selectedUser ? selectedUser.id : null
 
-  useEffect(() => {
 
+
+
+
+  const get_chats_history = async () => {
+    const url = `http://localhost:8000/api/v1/chat/history/${id_ref.current}/${selected_user}`
+    const headers = {
+      'Content-Type': 'application/json',
+    
+    };
+    try{
+      const response = await axios.get(url, {headers} )
+      if (response.status == 200){
+
+        setMessages(response.data)
+
+        // console.log(response)
+ 
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+    }
+
+
+  useEffect(() => {
 
 
     const user_id = sessionStorage.getItem('user_id'); 
@@ -29,8 +54,16 @@ const ChatWindow = ({ selectedUser }) => {
 
 
     if(id_ref.current !== null & selected_user !== null){
-      
-      // console.log("making connn")
+
+
+      const get_history = async () => {
+              await get_chats_history()
+        
+            }
+      get_history()
+
+
+
       const ws = new WebSocket(`ws://localhost:8000/ws/${id_ref.current}/${selected_user}`);
 
 
@@ -42,11 +75,12 @@ const ChatWindow = ({ selectedUser }) => {
       ws.onmessage = (event) => {
         const data = event.data;
         const json_data = JSON.parse(data)
+        console.log(json_data)
 
-        if (json_data.sender !== id_ref.current ){
+        if (json_data.sender_id !== id_ref.current ){
           setMessages((prevMessages) => [
             ...prevMessages,
-            json_data['text']
+            json_data
           ]);
         }
         
@@ -70,24 +104,41 @@ const ChatWindow = ({ selectedUser }) => {
    
   }, [selected_user, id_ref]);
 
-  const handleSendMessage = () => {
-    if (message.trim() && socket) {
-      socket.send(JSON.stringify( { "text": message , "sender" :id_ref.current }));
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        message,
-      ]);
-      setMessage('');
-    }
+  const formatTimestamp = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
   };
 
+  const handleSendMessage = () => {
+  if (message.trim() && socket) {
+    const timestamp = formatTimestamp();
+    const msg = {
+      text: message,
+      sender_id: id_ref.current,
+      receiver_id: selected_user,
+      created_at: timestamp
+    };
+    socket.send(JSON.stringify(msg));
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      msg
+    ]);
+    setMessage('');
+  }
+};
+
+  
   return (
     <div className="chat-window">
       <h2>Chat with {selectedUser ? selectedUser.username : '...'}</h2>
       <div className="messages">
         {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender}`}>
-            {msg}
+          <div key={index} className={`message ${msg.sender_id === id_ref.current ? 'me' : 'other'}`}>
+            <div className="message-content">{msg.text}</div>
+            <div className="message-timestamp">{formatTimestamp(msg.created_at)}</div>
           </div>
         ))}
       </div>

@@ -27,7 +27,7 @@ const ChatWindow = ({ selectedUser }) => {
     const url = `${BASE_URL}/api/v1/chat/history/${selected_user}`;
 
 
-    console.log({url})
+    console.log({url},"get_chats_history ================== called")
 
     const headers = {
       "Content-Type": "application/json",

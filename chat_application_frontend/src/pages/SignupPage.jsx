@@ -15,6 +15,8 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
+
 
 
 
@@ -44,7 +46,7 @@ const SignupPage = () => {
       'Content-Type': 'application/json',
 
     };
-    const url = "http://localhost:8000/api/v1/auth/signup"
+    const url = `${BASE_URL}/api/v1/auth/signup`
     
 
     try {

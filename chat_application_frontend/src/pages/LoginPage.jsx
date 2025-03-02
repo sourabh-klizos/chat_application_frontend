@@ -11,7 +11,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
 
+    console.log({BASE_URL})
 
   const store_id = async (user_id) => {
     sessionStorage.setItem('user_id', user_id);
@@ -34,7 +36,7 @@ const LoginPage = () => {
       'Content-Type': 'application/json',
 
     };
-    const url = "http://localhost:8000/api/v1/auth/login"
+    const url = `${BASE_URL}/api/v1/auth/login`
     
 
     try {

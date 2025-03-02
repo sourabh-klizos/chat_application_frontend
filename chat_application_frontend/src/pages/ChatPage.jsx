@@ -10,6 +10,7 @@ import "../styles/ChatPage.css"
 const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setusers] = useState([]);
+  const BASE_URL_WS =  import.meta.env.VITE_API_BASE_URL_WS;
 
   
 // const get_all_users = async () => {
@@ -54,7 +55,7 @@ const App = () => {
     // console.log("useEffect chat page")
     const user_id = sessionStorage.getItem('user_id'); 
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/status/${user_id}`);
+    const ws = new WebSocket(`${BASE_URL_WS}/status/${user_id}`);
 
 
     ws.onopen = () => {
@@ -94,7 +95,7 @@ const App = () => {
 
     return () => {
       // window.removeEventListener('beforeunload', handleBeforeUnload);
-      ws.send(JSON.stringify( { "type": "user_left",  "user_id": user_id}))
+      ws.send(JSON.stringify( { "type": "user_left"}))
       setTimeout(() => {
         ws.close();
       }, 1000);

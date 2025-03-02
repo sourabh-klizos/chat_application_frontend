@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ChatWindow = ({ selectedUser }) => {
+
+  const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
+  const BASE_URL_WS =  import.meta.env.VITE_API_BASE_URL_WS;
+  console.log("API URL:", BASE_URL);
+  console.log("API URL:", BASE_URL_WS);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState(null);
@@ -15,7 +21,12 @@ const ChatWindow = ({ selectedUser }) => {
 
   // Get chat history from the backend
   const get_chats_history = async () => {
-    const url = `http://localhost:8000/api/v1/chat/history/${id_ref.current}/${selected_user}`;
+    // const url = `http://localhost:8000/api/v1/chat/history/${id_ref.current}/${selected_user}`;
+
+    const url = `${BASE_URL}/api/v1/chat/history/${id_ref.current}/${selected_user}`;
+
+    console.log({url})
+
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -43,7 +54,10 @@ const ChatWindow = ({ selectedUser }) => {
       };
       get_history();
 
-      const ws = new WebSocket(`ws://localhost:8000/ws/${id_ref.current}/${selected_user}`);
+      const ws = new WebSocket(`${BASE_URL_WS}/${id_ref.current}/${selected_user}`);
+
+      console.log(`${BASE_URL_WS}/${id_ref.current}/${selected_user}`)
+
 
       ws.onopen = () => {
         console.log('Connected to WebSocket');

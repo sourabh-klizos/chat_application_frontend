@@ -54,19 +54,14 @@ const LoginPage = () => {
         await store_id(response.data.user_id)
         await store_tokens(response.data.access_token, response.data.refresh_token)
 
-        navigate("/chat")
-        // setuser_id_set()
-
-        // const user_id = sessionStorage.getItem('user_id'); 
-
-        // if(user_id){
-        //   navigate("/chat")
-        // }
-        
+        navigate("/chat")        
      
         console.log(response)
         console.log(response.data.user_id)
         
+
+
+
 
        
       

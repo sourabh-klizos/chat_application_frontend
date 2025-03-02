@@ -1,120 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import ChatWindow from '../components/ChatWindow';
-import UserList from '../components/UserList';
-import "../styles/ChatPage.css"
-
-
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ChatWindow from "../components/ChatWindow";
+import UserList from "../components/UserList";
+import "../styles/ChatPage.css";
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
+  const token = sessionStorage.getItem("access");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setusers] = useState([]);
-  const BASE_URL_WS =  import.meta.env.VITE_API_BASE_URL_WS;
+  const [allUsers, setAllUsers] = useState([]); // Store all users
+  const [onlineUsers, setOnlineUsers] = useState([]); // Store online users
+  const BASE_URL_WS = import.meta.env.VITE_API_BASE_URL_WS;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate();
 
   
-// const get_all_users = async () => {
-//   const url = "http://localhost:8000/api/v1/auth/users"
-//   const headers = {
-//     'Content-Type': 'application/json',
+
+  const getAllUsers = async () => {
+    const token = sessionStorage.getItem("access");
+    
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
   
-//   };
-//   try{
-//     const response = await axios.get(url, {headers} )
-//     if (response.status == 200){
-//       console.log(response.data)
-//       setusers(response.data)
- 
-//     }
-//   }
-//   catch(error){}
-//   }
+    try {
+      const response = await axios.get(`${BASE_URL}/api/v1/auth/users`, { headers });
+      if (response.status === 200) {
+        setAllUsers(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching all users", error);
+    }
+  };
 
-//   useEffect( () => {
-//     const get_users = async () => {
-//       await get_all_users()
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
-//     }
-//     get_users()
-//   }, [])
+  useEffect(() => {
+    const user_id = sessionStorage.getItem("user_id");
+    const ws = new WebSocket(`${BASE_URL_WS}/status/?token=${token}`);
 
-
-
-  // useEffect(() => {
-  //   // Handle the beforeunload event to send the message when the tab is closed
-    
-  //   // Cleanup the event listener when the component unmounts
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, [userId]);
-
-
-    
-  useEffect( () =>{
-    // console.log("useEffect chat page")
-    const user_id = sessionStorage.getItem('user_id'); 
-
-    const ws = new WebSocket(`${BASE_URL_WS}/status/${user_id}`);
-
+    ws.onerror = (error) => {
+      console.error("WebSocket error", error);
+      navigate("/login"); // Redirect to login on error
+    };
 
     ws.onopen = () => {
-      // console.log('Connected to WebSocket online users');
-      ws.send(JSON.stringify( { "type": "get_online_users"}));
-      
+      ws.send(JSON.stringify({ type: "get_online_users" }));
     };
 
     ws.onmessage = (event) => {
-      const data = event.data;
-      const json_data = JSON.parse(data)
-      console.log(json_data)
-      setusers(json_data)
-      
+      const data = JSON.parse(event.data);
+      setOnlineUsers(data); // Update online users
     };
-    
-    ws.onclose = () => {
-   
-      console.log("WebSocket is already closed. Could not send message.");
-    
-
-    };
-
-    // const handleBeforeUnload = () => {
-    //   if (ws.current.readyState === WebSocket.OPEN) {
-    //     ws.current.send(JSON.stringify({
-    //       type: 'user_left',
-    //       user_id: userId,
-    //     }));
-    //   }
-    // };
-
-    // Add event listener to handle page/tab close
-    // window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // setSocket(ws);
 
     return () => {
-      // window.removeEventListener('beforeunload', handleBeforeUnload);
-      ws.send(JSON.stringify( { "type": "user_left"}))
-      setTimeout(() => {
-        ws.close();
-      }, 1000);
+      ws.send(JSON.stringify({ type: "user_left" }));
+      setTimeout(() => ws.close(), 1000);
     };
-  
+  }, []);
 
-  }, [])
-  
-
+  // Merge and sort users: online first, then offline
+  const sortedUsers = allUsers.map(user => ({
+    ...user,
+    isOnline: onlineUsers.some(onlineUser => onlineUser.id === user.id),
+  })).sort((a, b) => b.isOnline - a.isOnline);
 
   return (
     <div className="app">
       <div className="sidebar">
-      {users ? (
-        <UserList users={users} onUserSelect={setSelectedUser} />
-      ) : (
-        <p>Loading users...</p>
-      )}
-        
+        {sortedUsers.length > 0 ? (
+          <UserList users={sortedUsers} onUserSelect={setSelectedUser} />
+        ) : (
+          <p>Loading users...</p>
+        )}
       </div>
       <div className="main-content">
         <ChatWindow selectedUser={selectedUser} />

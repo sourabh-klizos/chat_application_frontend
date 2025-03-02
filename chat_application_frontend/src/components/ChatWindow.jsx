@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ChatWindow = ({ selectedUser }) => {
-
+  const token = sessionStorage.getItem("access");
   const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
   const BASE_URL_WS =  import.meta.env.VITE_API_BASE_URL_WS;
-  console.log("API URL:", BASE_URL);
-  console.log("API URL:", BASE_URL_WS);
+  // console.log("API URL:", BASE_URL);
+  // console.log("API URL:", BASE_URL_WS);
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -23,12 +23,16 @@ const ChatWindow = ({ selectedUser }) => {
   const get_chats_history = async () => {
     // const url = `http://localhost:8000/api/v1/chat/history/${id_ref.current}/${selected_user}`;
 
-    const url = `${BASE_URL}/api/v1/chat/history/${id_ref.current}/${selected_user}`;
+    // const url = `${BASE_URL}/api/v1/chat/history/${id_ref.current}/${selected_user}`;
+    const url = `${BASE_URL}/api/v1/chat/history/${selected_user}`;
+
 
     console.log({url})
 
     const headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+       Authorization: `Bearer ${token}`,
+
     };
     try {
       const response = await axios.get(url, { headers });
@@ -36,7 +40,7 @@ const ChatWindow = ({ selectedUser }) => {
         setMessages(response.data);
       }
     } catch (error) {
-      console.log(error);
+      navigate('/login');
     }
   };
 
@@ -54,10 +58,16 @@ const ChatWindow = ({ selectedUser }) => {
       };
       get_history();
 
-      const ws = new WebSocket(`${BASE_URL_WS}/${id_ref.current}/${selected_user}`);
+      // const ws = new WebSocket(`${BASE_URL_WS}/${id_ref.current}/${selected_user}/?token=${token}`);
+      const ws = new WebSocket(`${BASE_URL_WS}/${selected_user}/?token=${token}`);
+
 
       console.log(`${BASE_URL_WS}/${id_ref.current}/${selected_user}`)
 
+      ws.onerror = (error) => {
+        console.error("WebSocket error", error);
+        navigate("/login"); // Redirect to login on error
+      };
 
       ws.onopen = () => {
         console.log('Connected to WebSocket');

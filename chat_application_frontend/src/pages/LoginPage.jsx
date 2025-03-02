@@ -19,6 +19,11 @@ const LoginPage = () => {
     sessionStorage.setItem('user_id', user_id);
   };
 
+  const store_tokens = async (access, refresh) => {
+    sessionStorage.setItem('access', access);
+    sessionStorage.setItem('refresh', refresh);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,6 +52,7 @@ const LoginPage = () => {
 
 
         await store_id(response.data.user_id)
+        await store_tokens(response.data.access_token, response.data.refresh_token)
 
         navigate("/chat")
         // setuser_id_set()

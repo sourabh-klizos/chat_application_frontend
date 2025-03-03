@@ -38,6 +38,7 @@ const ChatWindow = ({ selectedUser }) => {
       const response = await axios.get(url, { headers });
       if (response.status === 200) {
         setMessages(response.data);
+        console.log(response.data)
       }
     } catch (error) {
       navigate('/login');

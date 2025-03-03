@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import './LoginPage.css'; // Import the CSS file for styling
 import '../styles/LoginPage.css';
 import axios  from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link} from 'react-router-dom';
 
 
 const LoginPage = () => {
@@ -116,7 +116,8 @@ const LoginPage = () => {
           <button type="submit" className="login-button">Log In</button>
         </form>
         <p className="signup-link">
-          Don't have an account? <a href="/signup">Sign up</a>
+          Don't have an account?    <Link to="/signup" className="signup-link">Sign up</Link>
+          {/* <a href="/signup">Sign up</a>  */}
         </p>
       </div>
     </div>

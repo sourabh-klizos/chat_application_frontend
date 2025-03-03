@@ -46,3 +46,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 
 # docker run -d -p 8080:80 --name vite-container my-vite-app
+
+
+
+# docker build --build-arg VITE_API_BASE_URL=http://localhost:8000  --build-arg VITE_API_BASE_URL_WS=ws://localhost:8000/ws  -t my-vite-app .

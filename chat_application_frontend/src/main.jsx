@@ -5,7 +5,7 @@ import App from './App.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route,Navigate  } from "react-router";
 import SignupPage from './pages/SignupPage.jsx'
 import ChatPage from './pages/ChatPage.jsx'
 
@@ -25,6 +25,7 @@ ReactDOM.createRoot(root).render(
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/chat" element={<ChatPage />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
 );

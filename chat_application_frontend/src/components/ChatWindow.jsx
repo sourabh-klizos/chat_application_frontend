@@ -63,7 +63,7 @@ const ChatWindow = ({ selectedUser }) => {
       const ws = new WebSocket(`${BASE_URL_WS}/${selected_user}/?token=${token}`);
 
 
-      console.log(`${BASE_URL_WS}/${id_ref.current}/${selected_user}`)
+      console.log(ws)
 
       ws.onerror = (error) => {
         console.error("WebSocket error", error);

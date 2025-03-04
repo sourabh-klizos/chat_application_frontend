@@ -176,3 +176,42 @@
   margin: 0;
   font-size: 1.5em;
 }
+
+
+
+
+
+
+
+
+
+.user-list {
+  max-height: 800px; /* Set a max-height to make it scrollable */
+  overflow-y: auto;  
+}
+
+.user-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Customizing the scrollbar */
+.user-list::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.user-list::-webkit-scrollbar-track {
+  background: #ecf0f1; /* Background color of the track */
+  border-radius: 5px;  /* Rounded corners for the track */
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background-color: #3498db; /* Color of the scrollbar thumb */
+  border-radius: 5px;       /* Rounded corners for the thumb */
+  border: 2px solid #ecf0f1; /* Small border around the thumb */
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+  background-color: #2980b9; /* Darker thumb color on hover */
+}

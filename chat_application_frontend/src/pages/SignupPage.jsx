@@ -17,7 +17,7 @@ const SignupPage = () => {
 
   const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
 
-
+console.log(BASE_URL)
 
 
   const handleSubmit = async (e) => {
@@ -48,7 +48,7 @@ const SignupPage = () => {
     };
     const url = `${BASE_URL}/api/v1/auth/signup`
     
-
+    console.log(url)
     try {
 
       const response = await axios.post(url, data, { headers });

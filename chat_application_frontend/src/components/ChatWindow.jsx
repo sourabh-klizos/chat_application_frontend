@@ -60,7 +60,9 @@ const ChatWindow = ({ selectedUser }) => {
       get_history();
 
       // const ws = new WebSocket(`${BASE_URL_WS}/${id_ref.current}/${selected_user}/?token=${token}`);
-      const ws = new WebSocket(`${BASE_URL_WS}/${selected_user}/?token=${token}`);
+      // const ws = new WebSocket(`${BASE_URL_WS}/${selected_user}/?token=${token}`);
+
+      const ws = new WebSocket(`${BASE_URL_WS}/${id_ref.current}/${selected_user}/`);
 
 
       console.log(ws)

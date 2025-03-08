@@ -40,7 +40,9 @@ const App = () => {
 
   useEffect(() => {
     const user_id = sessionStorage.getItem("user_id");
-    const ws = new WebSocket(`${BASE_URL_WS}/status/?token=${token}`);
+    // const ws = new WebSocket(`${BASE_URL_WS}/status/?token=${token}`);
+    const ws = new WebSocket(`${BASE_URL_WS}/status/${user_id}/`);
+    
 
     ws.onerror = (error) => {
       console.error("WebSocket error", error);

@@ -40,6 +40,9 @@ You can now access the frontend by visiting ``http://localhost:8080`` in your br
 
 
 If you prefer to run the frontend locally without Docker, follow these steps:
+``
+create a .env file in root dir copy content from .env_example file and paste it in .env file
+``
 
 ```
 npm install

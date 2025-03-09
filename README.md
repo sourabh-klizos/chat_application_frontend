@@ -19,7 +19,7 @@ Start by cloning the repository to your local machine:
 git clone https://github.com/sourabh-klizos/chat_application_frontend.git
 
 cd chat_application_frontend
-cd chat_application_frontend # need to do it twice
+
 ```
 
 Build docker image
@@ -40,6 +40,8 @@ You can now access the frontend by visiting ``http://localhost:8080`` in your br
 
 
 If you prefer to run the frontend locally without Docker, follow these steps:
+
+`` create a .env file in root copy from .env_example file and paste it on .env``
 
 ```
 npm install
